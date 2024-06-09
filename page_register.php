@@ -1,10 +1,5 @@
 <?php
 session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +70,7 @@ error_reporting(E_ALL);
                                             ?>
                                         </div>
                                     <?php endif; ?>
-                                    <form id="js-login" novalidate="" action="./handler_register.php" method="POST">
+                                    <form id="js-login" novalidate="" action="handlers/handler_register.php" method="POST">
                                         <div class="form-group">
                                             <label class="form-label" for="emailverify">Email</label>
                                             <input type="email" name="email" id="emailverify" class="form-control" placeholder="Эл. адрес" required>

@@ -1,4 +1,17 @@
+<?php
+session_start();
 
+include "functions/functions_auth.php";
+include "functions/functions_edit.php";
+
+if(is_not_logged_in()) {
+    header("Location: ./page_login.php");
+    exit;
+}
+
+$user = get_user((int)$_GET['id']);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,23 +33,36 @@
             <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item ">
-                        <a class="nav-link" href="#">Главная</a>
+                        <a class="nav-link" href="users.php">Главная</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Войти</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Выйти</a>
+                        <a class="nav-link" href="page_login.php">Выйти</a>
                     </li>
                 </ul>
             </div>
         </nav>
         <main id="js-page-content" role="main" class="page-content mt-3">
+            <?php if(isset($_SESSION['alert-success'])): ?>
+                <div class="alert alert-success">
+                    <?php
+                    echo $_SESSION['alert-success'];
+                    unset($_SESSION['alert-success']);
+                    ?>
+                </div>
+            <?php endif; ?>
+            <?php if(isset($_SESSION['alert-danger'])): ?>
+                <div class="alert alert-danger">
+                    <?php
+                    echo $_SESSION['alert-danger'];
+                    unset($_SESSION['alert-danger']);
+                    ?>
+                </div>
+            <?php endif; ?>
             <div class="subheader">
                 <h1 class="subheader-title">
-                    <i class='subheader-icon fal fa-user'></i> Иван Иванов
+                    <i class='subheader-icon fal fa-user'></i> <?php echo $user['username']?>
                 </h1>
             </div>
             <div class="row">
@@ -46,10 +72,17 @@
                         <div class="row no-gutters row-grid">
                             <div class="col-12">
                                 <div class="d-flex flex-column align-items-center justify-content-center p-4">
-                                    <img src="img/demo/avatars/avatar-admin-lg.png" class="rounded-circle shadow-2 img-thumbnail" alt="">
+                                    <div class="form-group">
+                                        <?php if(!has_image($user['id'])): ?>
+                                            <img src="img/demo/authors/josh.png" class="rounded-circle shadow-2 img-thumbnail" alt="" width="220" heigh="150">
+                                        <?php endif; ?>
+                                        <?php if(has_image($user['id'])): ?>
+                                            <img src="./upload/<?php echo $user['image']; ?>" class="rounded-circle shadow-2 img-thumbnail" alt="" width="220" heigh="150">
+                                        <?php endif; ?>
+                                    </div>
                                     <h5 class="mb-0 fw-700 text-center mt-3">
-                                        Иван Иванов 
-                                        <small class="text-muted mb-0">Toronto, Canada</small>
+                                        <?php echo $user['username']?>
+                                        <small class="text-muted mb-0"><?php echo $user['job_title']?></small>
                                     </h5>
                                     <div class="mt-4 text-center demo">
                                         <a href="javascript:void(0);" class="fs-xl" style="color:#C13584">
@@ -66,12 +99,12 @@
                             </div>
                             <div class="col-12">
                                 <div class="p-3 text-center">
-                                    <a href="tel:+13174562564" class="mt-1 d-block fs-sm fw-400 text-dark">
-                                        <i class="fas fa-mobile-alt text-muted mr-2"></i> +1 317-456-2564</a>
-                                    <a href="mailto:oliver.kopyov@marlin.ru" class="mt-1 d-block fs-sm fw-400 text-dark">
-                                        <i class="fas fa-mouse-pointer text-muted mr-2"></i> oliver.kopyov@marlin.ru</a>
+                                    <a href="tel:<?php echo $user['phone']?>" class="mt-1 d-block fs-sm fw-400 text-dark">
+                                        <i class="fas fa-mobile-alt text-muted mr-2"></i> <?php echo $user['phone']?></a>
+                                    <a href="mailto:<?php echo $user['email']?>" class="mt-1 d-block fs-sm fw-400 text-dark">
+                                        <i class="fas fa-mouse-pointer text-muted mr-2"></i> <?php echo $user['email']?></a>
                                     <address class="fs-sm fw-400 mt-4 text-muted">
-                                        <i class="fas fa-map-pin mr-2"></i> Восточные Королевства, Штормград 15
+                                        <i class="fas fa-map-pin mr-2"></i> <?php echo $user['address']?>
                                     </address>
                                 </div>
                             </div>

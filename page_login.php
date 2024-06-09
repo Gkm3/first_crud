@@ -1,9 +1,5 @@
 <?php
 session_start();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,7 +54,7 @@ error_reporting(E_ALL);
             </div>
             <?php endif; ?>
 
-            <form action="./handler_login.php" method="POST">
+            <form action="handlers/handler_login.php" method="POST">
                 <div class="form-group">
                     <label class="form-label" for="username">Email</label>
                     <input type="email" name="email" id="username" class="form-control" placeholder="Эл. адрес" value="">

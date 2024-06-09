@@ -1,3 +1,29 @@
+<?php 
+session_start();
+include "functions/functions_auth.php";
+include "functions/functions_edit.php";
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$user_id = (int) $_GET['id'];
+
+if(is_not_logged_in()) {
+    redirect_to_login();
+}
+
+if(!is_admin()) {
+    if(!($user_id === $_SESSION['user']['id'])) {
+        $_SESSION['alert-danger'] = "Можно редактировать только свой профиль!";
+        header("Location: ./users.php");
+        exit;
+    }
+    $user = get_user($user_id);
+} else {
+    $user = get_user($user_id);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,15 +44,12 @@
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Главная <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="users.php">Главная <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="page_login.html">Войти</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Выйти</a>
+                    <a class="nav-link" href="page_login.php">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -38,7 +61,7 @@
             </h1>
 
         </div>
-        <form action="">
+        <form action="handlers/handler_media.php?id=<?php echo $user_id; ?>" method="POST" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-xl-6">
                     <div id="panel-1" class="panel">
@@ -48,17 +71,21 @@
                             </div>
                             <div class="panel-content">
                                 <div class="form-group">
-                                    <img src="img/demo/authors/josh.png" alt="" class="img-responsive" width="200">
+                                    <?php if(!has_image($user_id)): ?>
+                                        <img src="img/demo/authors/josh.png" alt="" class="img-responsive" width="200">
+                                    <?php endif; ?>
+                                    <?php if(has_image($user_id)): ?>
+                                        <img src="upload/<?php echo $user['image']; ?>" alt="" class="img-responsive" width="200">
+                                    <?php endif; ?>
                                 </div>
-
                                 <div class="form-group">
                                     <label class="form-label" for="example-fileinput">Выберите аватар</label>
-                                    <input type="file" id="example-fileinput" class="form-control-file">
+                                    <input type="file" name="avatar" id="example-fileinput" class="form-control-file">
                                 </div>
 
 
                                 <div class="col-md-12 mt-3 d-flex flex-row-reverse">
-                                    <button class="btn btn-warning">Загрузить</button>
+                                    <button class="btn btn-warning" type="submit">Загрузить</button>
                                 </div>
                             </div>
                         </div>
